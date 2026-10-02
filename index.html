@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="DOG LAB — landing page para consultar raças e imagens usando a Dog API." />
+  <title>DOG LAB — Consulta de Raças</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor-light" id="cursorLight" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand text-label" href="#inicio" aria-label="DOG LAB - início">
+      <span class="brand-paw" aria-hidden="true">●</span>
+      <span class="brand-copy">
+        <strong>DOG LAB</strong>
+        <small>BREED EXPERIENCE</small>
+      </span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Navegação principal">
+      <a class="text-label" href="#inicio">INÍCIO</a>
+      <a class="text-label" href="#consulta">CONSULTA</a>
+    </nav>
+
+    <div class="api-status text-label" id="apiBadge" aria-live="polite">
+      <span class="status-dot"></span>
+      <span>API ONLINE</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-blob blob-one" aria-hidden="true"></div>
+      <div class="hero-blob blob-two" aria-hidden="true"></div>
+      <div class="paw-pattern" aria-hidden="true"></div>
+
+      <div class="hero-copy reveal">
+        <p class="eyebrow text-label"><span>01</span> DOG API + JAVASCRIPT</p>
+
+        <h1 class="hero-title" id="heroTitle">
+          <span data-text="DESCUBRA">DESCUBRA</span>
+          <span class="fur-word" data-text="RAÇAS DE">RAÇAS DE</span>
+          <span data-text="CACHORROS.">CACHORROS.</span>
+        </h1>
+
+        <p class="hero-description">
+          Digite uma raça em inglês e consulte a <strong>Dog API</strong> em tempo real.
+          Enquanto faz a consulta, você pode brincar com o cachorro interativo e mover os ossos pela cena.
+        </p>
+
+        <div class="hero-actions">
+          <a class="primary-btn text-label" href="#consulta">
+            <span>BUSCAR UMA RAÇA</span>
+            <span class="btn-arrow">↘</span>
+          </a>
+
+          <div class="mini-stat">
+            <strong class="display-number" id="breedCount">—</strong>
+            <span>RAÇAS / SUB-RAÇAS</span>
+          </div>
+        </div>
+
+        <div class="hero-hints" aria-label="Controles do cachorro interativo">
+          <span>🖱 ARRASTE PARA GIRAR O CACHORRO</span>
+          <span>🦴 PEGUE E ARRASTE OS OSSOS</span>
+          <span>🐾 CLIQUE NO CACHORRO PARA ELE REAGIR</span>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal">
+        <div class="model-frame" id="modelFrame" aria-label="Cachorro realista interativo com ossos">
+          <canvas id="dogCanvas"></canvas>
+
+          <div class="model-loader" id="modelLoader" aria-live="polite">
+            <span class="loader-paw">🐾</span>
+            <span>CARREGANDO O CACHORRO...</span>
+          </div>
+
+          <div class="model-label label-top text-label">
+            <span>INTERATIVO</span>
+            <strong>CACHORRO REALISTA</strong>
+          </div>
+
+          <div class="model-label label-bottom text-label">
+            <span>INTERAÇÃO</span>
+            <strong>MOUSE + ARRASTAR</strong>
+          </div>
+
+          <div class="scene-floor-label text-label" aria-hidden="true">DOG LAB // API</div>
+        </div>
+      </div>
+
+      <div class="hero-footer-line text-label" aria-hidden="true">
+        <span>FETCH()</span>
+        <span>JSON</span>
+        <span>DOM</span>
+        <span>DOG API</span>
+      </div>
+    </section>
+
+    <section class="search-section" id="consulta">
+      <div class="section-heading reveal">
+        <p class="eyebrow cream"><span>02</span> CONSULTA REAL</p>
+        <h2 class="section-title">QUAL <span>CACHORRO</span> VOCÊ QUER VER?</h2>
+        <p>Digite a raça em inglês. Exemplos: <strong>husky</strong>, <strong>pug</strong>, <strong>poodle</strong>, <strong>akita</strong>.</p>
+      </div>
+
+      <div class="search-layout">
+        <div class="search-card reveal" id="searchConsole">
+          <div class="card-topline text-label">
+            <span>DOG API QUERY</span>
+            <span>GET / JSON</span>
+          </div>
+
+          <form id="breedForm" novalidate>
+            <label class="text-label" for="breedInput">NOME DA RAÇA EM INGLÊS</label>
+
+            <div class="input-wrap">
+              <span class="input-paw" aria-hidden="true">🐾</span>
+              <input
+                id="breedInput"
+                name="breed"
+                type="text"
+                list="breedSuggestions"
+                autocomplete="off"
+                placeholder="ex: golden retriever"
+                aria-describedby="formHint"
+              />
+              <datalist id="breedSuggestions"></datalist>
+
+              <button class="search-btn text-label" type="submit" id="searchButton">
+                <span class="button-label">BUSCAR</span>
+                <span class="button-icon">↗</span>
+              </button>
+            </div>
+
+            <p class="form-hint" id="formHint">
+              A requisição é feita com JavaScript puro: <code>await fetch(url)</code>.
+            </p>
+          </form>
+
+          <div class="quick-breeds" aria-label="Sugestões rápidas">
+            <button type="button" data-breed="husky">HUSKY</button>
+            <button type="button" data-breed="pug">PUG</button>
+            <button type="button" data-breed="poodle">POODLE</button>
+            <button type="button" data-breed="akita">AKITA</button>
+          </div>
+
+          <div class="system-log" aria-live="polite">
+            <span class="log-label text-label">STATUS</span>
+            <span id="systemMessage">Aguardando uma consulta...</span>
+          </div>
+        </div>
+
+        <aside class="request-info reveal" aria-label="Informações da requisição">
+          <article class="info-card tilt-card">
+            <span class="card-index">01</span>
+            <p>ENDPOINT</p>
+            <strong class="text-label" id="endpointPreview">/api/breed/{raça}/images/random</strong>
+          </article>
+
+          <article class="info-card tilt-card">
+            <span class="card-index">02</span>
+            <p>MÉTODO</p>
+            <strong class="display-number">GET</strong>
+          </article>
+
+          <article class="info-card tilt-card">
+            <span class="card-index">03</span>
+            <p>FORMATO</p>
+            <strong class="display-number">JSON</strong>
+          </article>
+        </aside>
+      </div>
+
+      <div class="result-shell" id="resultShell" aria-live="polite" aria-atomic="true">
+        <div class="result-placeholder" id="resultPlaceholder">
+          <div class="placeholder-bone" aria-hidden="true">🦴</div>
+          <div>
+            <span class="text-label">RESULTADO DA API</span>
+            <h3 class="section-title">SEU DOG VAI APARECER AQUI.</h3>
+            <p>Faça uma consulta e o JavaScript atualizará este painel sem recarregar a página.</p>
+          </div>
+        </div>
+
+        <article class="result-card" id="resultCard" hidden>
+          <div class="dog-photo-panel tilt-card">
+            <img id="dogImage" alt="Cachorro retornado pela Dog API" />
+            <div class="photo-depth" aria-hidden="true"></div>
+            <div class="photo-label text-label">FOTO REAL // DOG API</div>
+          </div>
+
+          <div class="dog-data-panel">
+            <p class="eyebrow dark"><span>OK</span> API RESPONSE</p>
+            <h3 class="section-title" id="breedName">—</h3>
+
+            <dl class="data-grid">
+              <div>
+                <dt>STATUS</dt>
+                <dd class="text-label" id="requestStatus">—</dd>
+              </div>
+              <div>
+                <dt>RAÇA</dt>
+                <dd class="text-label" id="breedSlug">—</dd>
+              </div>
+              <div>
+                <dt>RETORNO</dt>
+                <dd class="text-label">IMAGEM</dd>
+              </div>
+              <div>
+                <dt>ATUALIZADO</dt>
+                <dd class="text-label" id="requestTime">—</dd>
+              </div>
+            </dl>
+
+            <div class="json-preview">
+              <div class="json-title text-label">JSON // RESUMO</div>
+              <pre id="jsonPreview">{}</pre>
+            </div>
+
+            <button class="secondary-btn text-label" type="button" id="newImageButton">
+              OUTRA FOTO DA MESMA RAÇA <span>↻</span>
+            </button>
+          </div>
+        </article>
+
+        <div class="error-card" id="errorCard" hidden>
+          <span class="error-code text-label">DOG API // ERROR</span>
+          <h3 class="section-title" id="errorTitle">RAÇA NÃO ENCONTRADA</h3>
+          <p id="errorText">Verifique o nome digitado e tente novamente.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <strong class="text-label">DOG LAB</strong>
+      <span>Projeto acadêmico — Programação Front-End</span>
+    </div>
+    <div class="footer-tech text-label">HTML / CSS / JAVASCRIPT / DOG API</div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
